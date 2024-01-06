@@ -3,6 +3,8 @@ import React from 'react'
 import Center from './Center'
 import useForm from '../Hooks/useForms'
 import { ENDPOINTS, createAPIEndpoint } from '../api'
+import useStateContext from '../Hooks/useStateContext'
+import { useNavigate } from 'react-router-dom'
 
 const getFreshModelObject = ()=> ({
     name: '',
@@ -11,6 +13,8 @@ const getFreshModelObject = ()=> ({
 
 export default function Login() {
 
+    const {context, setContext} = useStateContext(); 
+    const navigate = useNavigate()
     const {
         values,
         setValues,
@@ -24,7 +28,10 @@ const login = e =>{
     if(validate())
         createAPIEndpoint(ENDPOINTS.participant)
         .post(values)
-        .then(res => console.log(res))
+        .then(res => {
+            setContext({participantId:res.data.participantId})
+            navigate('/quiz')
+        })
         .catch(err => console.log(err))
 } 
 
